@@ -2,13 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class VariablesSetter : MonoBehaviour
+namespace GameDevWithMarco.Managers
 {
-    [SerializeField] Animator transitionAnim;
-
-    private void Awake()
+    public class VariablesSetter : MonoBehaviour
     {
-        //Sets the fade variable
-        MyScenemanager.Instance.transitionAnim = transitionAnim;
+        [SerializeField] Animator transitionAnim;
+
+        private void Awake()
+        {
+            //Sets the fade variable
+            MyScenemanager.Instance.transitionAnim = transitionAnim;
+        }
     }
 }
