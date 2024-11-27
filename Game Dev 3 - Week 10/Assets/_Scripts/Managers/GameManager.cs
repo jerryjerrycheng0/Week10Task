@@ -105,6 +105,11 @@ namespace GameDevWithMarco.Managers
             }
         }
 
+        public void LifePackLogic()
+        {
+            lives++;
+        }
+
         public void RestartGame()
         {
             score = 0;

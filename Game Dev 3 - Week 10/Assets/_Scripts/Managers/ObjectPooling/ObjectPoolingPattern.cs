@@ -1,72 +1,88 @@
 
 using UnityEngine;
 using GameDevWithMarco.Managers;
+using System.Collections.Generic;
 
 namespace GameDevWithMarco.DesignPattern
 {
     public class ObjectPoolingPattern : Singleton<ObjectPoolingPattern>
     {
-        [SerializeField] PoolData bulletPool;
-        [SerializeField] PoolData muzzleFlashPool;
+        [SerializeField] PoolData goodPackagePoolData;
+        [SerializeField] PoolData badPackagePoolData;
+        [SerializeField] PoolData lifePackagePoolData;
+
+        public List<GameObject> goodPool = new List<GameObject>();
+        public List<GameObject> badPool = new List<GameObject>();
+        public List<GameObject> lifePool = new List<GameObject>();
 
         public enum TypeOfPool
         {
-            BulletPool,
-            MuzzleFlash
+            Good,
+            Bad,
+            Life
         }
 
         // Start is called before the first frame update
-        private void Start()
+        protected override void Awake()
         {
-            FillThePool(bulletPool);
-            FillThePool(muzzleFlashPool);
-        }       
+            FillThePool(goodPackagePoolData, goodPool);
+            FillThePool(badPackagePoolData, badPool);
+            FillThePool(lifePackagePoolData, lifePool);
+        }
      
 
-        private void FillThePool(PoolData poolData)
+        private void FillThePool(PoolData poolData, List<GameObject> targetPoolContainer)
         {
-            //Clears the pool
-            poolData.ResetThePool();
+            GameObject container = CreateAContainerForThePool(poolData);
 
-            //Goes as many time as we want the pool amount to be
             for (int i = 0; i < poolData.poolAmount; i++)
             {
-                //Instantiates on item in the pool
-                GameObject thingToAddToThePool = Instantiate(poolData.poolItem);
-                //Sets the patent to be what this script is attached to
-                thingToAddToThePool.transform.parent = transform;
-                //Deactivates it 
-                thingToAddToThePool.SetActive(false);
-                //Adds it to the pool container list
-                poolData.pooledObjectContainer.Add(thingToAddToThePool);
+                GameObject thingToAddToPool = Instantiate(poolData.poolItem, container.transform);
+
+                thingToAddToPool.SetActive(false);
+
+                targetPoolContainer.Add(thingToAddToPool);
             }
         }
 
-        public GameObject GetPoolItem(TypeOfPool poolToUse)
+        private GameObject CreateAContainerForThePool(PoolData poolData)
         {
-            //To store the local pool
-            PoolData pool = ScriptableObject.CreateInstance<PoolData>();
+            GameObject container = new GameObject();
 
-            switch (poolToUse)
+            container.transform.SetParent(this.transform);
+
+            container.name = poolData.name;
+
+            return container;
+        }
+
+        public GameObject GetPoolItem(TypeOfPool typeOfPoolToUse)
+        {
+            List<GameObject> poolToUse = new List<GameObject>();
+
+            switch (typeOfPoolToUse)
             {
-                case TypeOfPool.BulletPool:
-                    pool = bulletPool;
+                case TypeOfPool.Good:
+                    poolToUse = goodPool;
                     break;
-                case TypeOfPool.MuzzleFlash: 
-                    pool = muzzleFlashPool;
+                case TypeOfPool.Bad:
+                    poolToUse = badPool;
                     break;
+                case TypeOfPool.Life:
+                    poolToUse = lifePool;
+                    break;
+                
             }
 
+            int itemInPoolCount = poolToUse.Count;
             //Goes through the pool
-            for (int i = 0; i < pool.pooledObjectContainer.Count; i++)
+            for (int i = 0; itemInPoolCount > 0; i++)
             {
                 //Looks for the first item that is not active
-                if (!pool.pooledObjectContainer[i].activeInHierarchy)
+                if (!poolToUse[i].activeSelf)
                 {
-                    //activates it
-                    pool.pooledObjectContainer[i].SetActive(true);
-                    //Returns it
-                    return pool.pooledObjectContainer[i];
+                    poolToUse[i].SetActive(true);
+                    return poolToUse[i];  
                 }
             }
             //Gives us a warning that the pool might be too small

@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eee042079b28dd94e8995795ba4bb2a2, type: 3}
+  m_Name: BadPickup
+  m_EditorClassIdentifier: 
+  minPitchValue: 0.9
+  maxPitchValue: 1.1
+  clipToUse: {fileID: 8300000, guid: 2279d47c7d9817246ae81b72e8ee0700, type: 3}
+  soundVolume: 0.4

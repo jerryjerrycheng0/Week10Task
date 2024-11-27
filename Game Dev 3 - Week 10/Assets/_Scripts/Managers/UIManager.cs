@@ -105,9 +105,14 @@ namespace GameDevWithMarco.Managers
 
             foreach (var scoreThreshold in scoreComments.Keys)
             {
-                if (GameManager.Instance.score < scoreThreshold)
+                if (GameManager.Instance.score <= scoreThreshold)
                 {
                     gameOverScoreComment.text = scoreComments[scoreThreshold] + " - RESTART SESSION";
+                    return;
+                }
+                else if (GameManager.Instance.score > 6000000)
+                {
+                    gameOverScoreComment.text = scoreComments[6000000] + " - RESTART SESSION";
                     return;
                 }
             }
