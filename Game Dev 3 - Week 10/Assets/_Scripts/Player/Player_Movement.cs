@@ -118,7 +118,6 @@ namespace GameDevWithMarco.Player
                 transform.position = Vector3.Lerp(startPos, lerpPositionArray[arrayNumber].transform.position, timePercentage);
                 yield return null;
 
-
             }
             isWaiting = false;
         }

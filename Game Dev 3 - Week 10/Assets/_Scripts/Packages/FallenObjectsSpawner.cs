@@ -20,34 +20,72 @@ namespace GameDevWithMarco.Packages
         [SerializeField] float goodPackageDropPercentage = 70f;
         [SerializeField] float badPackageDropPercentage = 25f;
         [SerializeField] float lifePackageDropPercentage = 5f;
-        [SerializeField] float minimum_goodPackagePercentage = 50f;
-        [SerializeField] float maximum_badPackagePercentage = 50f;
+        [SerializeField] float minimum_goodPackagePercentage = 25f;
+        [SerializeField] float maximum_badPackagePercentage = 70f;
         [SerializeField] float percentageChangeRatio = 0.1f;
-
-        private float lastGoodPercentage;
-        private float lastBadPercentage;
 
         void Start()
         {
             currentDelay = initialDelay;
-            lastGoodPercentage = goodPackageDropPercentage;
-            lastBadPercentage = badPackageDropPercentage;
             StartCoroutine(SpawningLoop());
         }
 
-        private void SpawnPackageAtARandomLocation(ObjectPoolingPattern.TypeOfPool poolType)
+        /// <summary>
+        /// Adjust percentages after collecting a package.
+        /// </summary>
+        /// <param name="isGoodPackage">True if a good package is collected, false otherwise.</param>
+        public void AdjustPercentagesAfterPackageCollection(bool isGoodPackage)
         {
-            GameObject spawnedPackage = ObjectPoolingPattern.Instance.GetPoolItem(poolType);
+            if (isGoodPackage)
+            {
+                AdjustGoodAndBadPercentages(-percentageChangeRatio);
+            }
+            else
+            {
+                AdjustGoodAndBadPercentages(percentageChangeRatio);
+            }
+        }
 
-            int randomInteger = Random.Range(0, spawners.Length);
-            Vector2 spawnPosition = spawners[randomInteger].transform.position;
+        /// <summary>
+        /// Adjust percentages when the difficulty increases.
+        /// </summary>
+        public void IncreaseDifficulty()
+        {
+            AdjustGoodAndBadPercentages(percentageChangeRatio * 0.5f); // Smaller adjustment for difficulty increases
+        }
 
-            spawnedPackage.transform.position = spawnPosition;
+        /// <summary>
+        /// Adjusts good and bad package percentages in opposite directions.
+        /// </summary>
+        /// <param name="change">The amount to increase/decrease bad package percentage.</param>
+        private void AdjustGoodAndBadPercentages(float change)
+        {
+            badPackageDropPercentage += change;
+            goodPackageDropPercentage -= change;
+
+            CapThePercentages();
+        }
+
+        /// <summary>
+        /// Ensures percentages remain within specified bounds.
+        /// </summary>
+        private void CapThePercentages()
+        {
+            // Cap the good and bad percentages within their allowed ranges
+            goodPackageDropPercentage = Mathf.Clamp(goodPackageDropPercentage, minimum_goodPackagePercentage, 100f - lifePackageDropPercentage);
+            badPackageDropPercentage = Mathf.Clamp(badPackageDropPercentage, 0f, maximum_badPackagePercentage);
+
+            // Ensure total percentages (good + bad + life) do not exceed 100%
+            float total = goodPackageDropPercentage + badPackageDropPercentage + lifePackageDropPercentage;
+            if (total > 100f)
+            {
+                lifePackageDropPercentage -= (total - 100f);
+                lifePackageDropPercentage = Mathf.Max(lifePackageDropPercentage, 0f);
+            }
         }
 
         private IEnumerator SpawningLoop()
         {
-            AdjustPercentagesBasedOnSuccessRate();
             SpawnPackageAtARandomLocation(GetPackageTypeBasedOnPercentage());
 
             yield return new WaitForSeconds(currentDelay);
@@ -58,47 +96,14 @@ namespace GameDevWithMarco.Packages
             StartCoroutine(SpawningLoop());
         }
 
-        private void AdjustPercentagesBasedOnSuccessRate()
+        private void SpawnPackageAtARandomLocation(ObjectPoolingPattern.TypeOfPool poolType)
         {
-            int successRate = GameManager.Instance.successRate;
+            GameObject spawnedPackage = ObjectPoolingPattern.Instance.GetPoolItem(poolType);
 
-            // Adjust percentages based on success rate
-            if (successRate >= 50)
-            {
-                badPackageDropPercentage += percentageChangeRatio;
-                goodPackageDropPercentage -= percentageChangeRatio;
-            }
-            else
-            {
-                badPackageDropPercentage -= percentageChangeRatio;
-                goodPackageDropPercentage += percentageChangeRatio;
-            }
+            int randomIndex = Random.Range(0, spawners.Length);
+            Vector2 spawnPosition = spawners[randomIndex].transform.position;
 
-            CapThePercentages();
-            LogPercentageChanges();
-        }
-
-        private void CapThePercentages()
-        {
-            goodPackageDropPercentage = Mathf.Clamp(goodPackageDropPercentage, minimum_goodPackagePercentage, 100f);
-            badPackageDropPercentage = Mathf.Clamp(badPackageDropPercentage, 0f, maximum_badPackagePercentage);
-
-            float total = goodPackageDropPercentage + badPackageDropPercentage + lifePackageDropPercentage;
-            if (total > 100f)
-            {
-                lifePackageDropPercentage -= (total - 100f);
-                lifePackageDropPercentage = Mathf.Max(lifePackageDropPercentage, 0f);
-            }
-        }
-
-        private void LogPercentageChanges()
-        {
-            if (goodPackageDropPercentage != lastGoodPercentage || badPackageDropPercentage != lastBadPercentage)
-            {
-                Debug.Log($"Percentages Updated: Good = {goodPackageDropPercentage}%, Bad = {badPackageDropPercentage}%");
-                lastGoodPercentage = goodPackageDropPercentage;
-                lastBadPercentage = badPackageDropPercentage;
-            }
+            spawnedPackage.transform.position = spawnPosition;
         }
 
         private ObjectPoolingPattern.TypeOfPool GetPackageTypeBasedOnPercentage()
@@ -117,6 +122,16 @@ namespace GameDevWithMarco.Packages
             {
                 return ObjectPoolingPattern.TypeOfPool.Life;
             }
+        }
+
+        public void GrowGoodPercentage()
+        {
+            AdjustGoodAndBadPercentages(-percentageChangeRatio);
+        }
+
+        public void GrowBadPercentage()
+        {
+            AdjustGoodAndBadPercentages(percentageChangeRatio);
         }
     }
 }

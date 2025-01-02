@@ -12,6 +12,7 @@ namespace GameDevWithMarco.Managers
         public int successRate; // Now explicitly treated as a percentage (0–100)
         public int lives = 5;
         public float playTime = 0;
+        public float difficulty = 1.0f;  // Difficulty level
 
         [SerializeField] GameEvent restartGame;
         [SerializeField] GameEvent gameOver;
@@ -69,6 +70,7 @@ namespace GameDevWithMarco.Managers
         {
             score += packageValues[0];
             successRate += 1; // Increase success rate on collecting a good package
+            difficulty += 0.1f; // Increase difficulty when a good package is collected
         }
 
         public void RedPackLogic()
@@ -100,6 +102,7 @@ namespace GameDevWithMarco.Managers
             successRate = 50; // Reset to neutral on restart
             lives = 5;
             playTime = 0f;
+            difficulty = 1.0f; // Reset difficulty on restart
         }
     }
 }
