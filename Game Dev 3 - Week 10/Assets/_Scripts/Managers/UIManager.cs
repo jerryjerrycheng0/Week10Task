@@ -62,6 +62,10 @@ namespace GameDevWithMarco.Managers
             {
                 GameOverInitialisation();
             }
+            if (SceneManager.GetActiveScene().name == "scb_GameWin")
+            {
+                GameWinInitialisation();
+            }
         }
 
         public void ScoreAndTimerUpdater()
@@ -146,6 +150,13 @@ namespace GameDevWithMarco.Managers
             gameOverScore.text = "THE TOTAL SCORE IS " + GameManager.Instance.score + " AND YOU SURVIVED " + GameManager.Instance.playTime.ToString("f2") + " seconds!";
             gameOverScoreComment = GameObject.Find("txt_TotalScoreComment").GetComponent<Text>();
             FinalComment();
+        }
+        private void GameWinInitialisation()
+        {
+            gameOverScore = GameObject.Find("txt_TotalScore").GetComponent<Text>();
+            gameOverScore.text = "THE TOTAL SCORE IS " + GameManager.Instance.score + " AND YOU SURVIVED " + GameManager.Instance.playTime.ToString("f2") + " seconds!";
+            gameOverScoreComment = GameObject.Find("txt_TotalScoreCommentWin").GetComponent<Text>();
+            gameOverScoreComment.text = "Amazingly done. Care to try out again?";
         }
 
         // Method to update the Difficulty UI Text

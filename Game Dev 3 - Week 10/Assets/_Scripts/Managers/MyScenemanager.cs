@@ -11,6 +11,8 @@ namespace GameDevWithMarco.Managers
         public Animator transitionAnim;
         private string gameLevel = "scn_Level1";
         private string gameOver = "scn_GameOver";
+        private string gameWin = "scn_GameWin";
+        [SerializeField] GameManager gameManager;
 
 
 
@@ -21,9 +23,6 @@ namespace GameDevWithMarco.Managers
                 StartCoroutine(WaitAndLoadNewScene());
             }
         }
-
-
-
 
 
         IEnumerator WaitAndLoadNewScene()
@@ -40,8 +39,17 @@ namespace GameDevWithMarco.Managers
 
         public void GameOverReaction()
         {
-            StartCoroutine(GameOver());
+            if (gameManager.isWin == false)
+            {
+                StartCoroutine(GameOver());
+            }
+            else
+            {
+                StartCoroutine(GameWin());
+            }
         }
+
+
 
         IEnumerator GameOver()
         {
@@ -50,7 +58,14 @@ namespace GameDevWithMarco.Managers
             SceneManager.LoadScene(gameOver);
         }
 
-        public void RestartGameReaction()
+        IEnumerator GameWin()
+        {
+            transitionAnim.SetTrigger("end");
+            yield return new WaitForSeconds(1.5f);
+            SceneManager.LoadScene(gameWin);
+        }
+
+            public void RestartGameReaction()
         {
             StartCoroutine(RestartGame());
         }

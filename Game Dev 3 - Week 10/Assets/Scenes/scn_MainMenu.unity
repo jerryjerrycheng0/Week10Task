@@ -856,6 +856,34 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &818137793
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 818137787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85b156b310ef7874480e7bf7c59e3dc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameEvent: {fileID: 11400000, guid: be2de053f9da3b149937e17ddf48c4e6, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 818137788}
+        m_TargetAssemblyTypeName: GameDevWithMarco.Managers.MyScenemanager, Assembly-CSharp
+        m_MethodName: GameOverReaction
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &976349460
 GameObject:
   m_ObjectHideFlags: 0
@@ -1690,6 +1718,17 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4817018119564171570, guid: 8b35cd8ebf17bfa4aaf83b6304ea4fcf,
         type: 3}
+      propertyPath: isWin
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4817018119564171570, guid: 8b35cd8ebf17bfa4aaf83b6304ea4fcf,
+        type: 3}
+      propertyPath: gameWin
+      value: 
+      objectReference: {fileID: 11400000, guid: be2de053f9da3b149937e17ddf48c4e6,
+        type: 2}
+    - target: {fileID: 4817018119564171570, guid: 8b35cd8ebf17bfa4aaf83b6304ea4fcf,
+        type: 3}
       propertyPath: gameOver
       value: 
       objectReference: {fileID: 11400000, guid: b98338abbbeb7a242a0761ade08d9771,
@@ -2092,6 +2131,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6020198856816787008, guid: f799e6983a8838349ac68bafede4d8c5,
         type: 3}
+      propertyPath: gameManager
+      value: 
+      objectReference: {fileID: 1964357486}
+    - target: {fileID: 6020198856816787008, guid: f799e6983a8838349ac68bafede4d8c5,
+        type: 3}
       propertyPath: transitionAnim
       value: 
       objectReference: {fileID: 1383469316}
@@ -2167,6 +2211,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 818137790}
+    - targetCorrespondingSourceObject: {fileID: 6020198856816787015, guid: f799e6983a8838349ac68bafede4d8c5,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 818137793}
   m_SourcePrefab: {fileID: 100100000, guid: f799e6983a8838349ac68bafede4d8c5, type: 3}
 --- !u!4 &6168275215464110543
 Transform:

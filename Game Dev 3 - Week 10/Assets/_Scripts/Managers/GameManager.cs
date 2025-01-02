@@ -16,6 +16,13 @@ namespace GameDevWithMarco.Managers
 
         [SerializeField] GameEvent restartGame;
         [SerializeField] GameEvent gameOver;
+        [SerializeField] GameEvent gameWin;
+
+        private int winScoreThreshold = 2000000; // Example win score
+        private float winTimeThreshold = 60f;  // Example survival time in seconds
+        [SerializeField] bool isSurvival;
+        private bool isGameOver; // Tracks if the game is already over
+        public bool isWin;
 
         protected override void Awake()
         {
@@ -25,13 +32,20 @@ namespace GameDevWithMarco.Managers
 
         void Update()
         {
-            ValuesClamping();
-            TimeGoingDown();
-            if (SceneManager.GetActiveScene().name == "scn_Level1")
+            if (!isGameOver) // Only run game logic if the game is not over
             {
-                StartCounting();
+                ValuesClamping();
+                TimeGoingDown();
+
+                if (SceneManager.GetActiveScene().name == "scn_Level1")
+                {
+                    StartCounting();
+                    CheckWinCondition(); // Check win condition during gameplay
+                }
             }
-            else if (SceneManager.GetActiveScene().name == "scn_GameOver" && Input.anyKeyDown)
+
+            if (SceneManager.GetActiveScene().name == "scn_GameOver" && Input.anyKeyDown || 
+                SceneManager.GetActiveScene().name == "scn_GameWin" && Input.anyKeyDown)
             {
                 restartGame.Raise();
             }
@@ -42,12 +56,14 @@ namespace GameDevWithMarco.Managers
             playTime = 0f;
             score = 0;
             successRate = 50; // Start at a neutral 50%
+            isGameOver = false; // Reset game over state
         }
 
         private void TimeGoingDown()
         {
             if (SceneManager.GetActiveScene().name != "scn_MainMenu" &&
-                SceneManager.GetActiveScene().name != "scn_GameOver")
+                SceneManager.GetActiveScene().name != "scn_GameOver" && 
+                SceneManager.GetActiveScene().name != "scn_GameWin")
             {
                 timeLeft -= Time.deltaTime;
             }
@@ -87,7 +103,7 @@ namespace GameDevWithMarco.Managers
             lives--;
             if (lives <= 0)
             {
-                gameOver.Raise();
+                TriggerGameOver();
             }
         }
 
@@ -103,6 +119,39 @@ namespace GameDevWithMarco.Managers
             lives = 5;
             playTime = 0f;
             difficulty = 1.0f; // Reset difficulty on restart
+            isGameOver = false; // Reset game over state
+            isWin = false;
+        }
+
+        public void CheckWinCondition()
+        {
+            if (isSurvival)
+            {
+                if (playTime >= winTimeThreshold)
+                {
+                    TriggerWin();
+                }
+            }
+            else
+            {
+                if (score >= winScoreThreshold)
+                {
+                    TriggerWin();
+                }
+            }
+        }
+
+        private void TriggerWin()
+        {   
+            isWin = true;
+            gameWin.Raise();
+
+        }
+
+        private void TriggerGameOver()
+        {
+            isGameOver = true;
+            gameOver.Raise();
         }
     }
 }
