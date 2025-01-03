@@ -17,12 +17,19 @@ namespace GameDevWithMarco.Packages
         private float currentDelay;
 
         [Header("Packages Drop Chance Percentages")]
-        [SerializeField] float goodPackageDropPercentage = 70f;
-        [SerializeField] float badPackageDropPercentage = 25f;
+        public float goodPackageDropPercentage = 70f;
+        public float badPackageDropPercentage = 25f;
         [SerializeField] float lifePackageDropPercentage = 5f;
-        [SerializeField] float minimum_goodPackagePercentage = 25f;
-        [SerializeField] float maximum_badPackagePercentage = 70f;
+        public float minimum_goodPackagePercentage = 10f;
+        public float maximum_badPackagePercentage = 85f;
         [SerializeField] float percentageChangeRatio = 0.1f;
+
+        public static FallenObjectsSpawner Instance { get; private set; }
+
+        private void Awake()
+        {
+            if (Instance == null) Instance = this;
+        }
 
         void Start()
         {
@@ -30,10 +37,6 @@ namespace GameDevWithMarco.Packages
             StartCoroutine(SpawningLoop());
         }
 
-        /// <summary>
-        /// Adjust percentages after collecting a package.
-        /// </summary>
-        /// <param name="isGoodPackage">True if a good package is collected, false otherwise.</param>
         public void AdjustPercentagesAfterPackageCollection(bool isGoodPackage)
         {
             if (isGoodPackage)
@@ -46,36 +49,30 @@ namespace GameDevWithMarco.Packages
             }
         }
 
-        /// <summary>
-        /// Adjust percentages when the difficulty increases.
-        /// </summary>
         public void IncreaseDifficulty()
         {
             AdjustGoodAndBadPercentages(percentageChangeRatio * 0.5f); // Smaller adjustment for difficulty increases
         }
 
-        /// <summary>
-        /// Adjusts good and bad package percentages in opposite directions.
-        /// </summary>
-        /// <param name="change">The amount to increase/decrease bad package percentage.</param>
         private void AdjustGoodAndBadPercentages(float change)
         {
             badPackageDropPercentage += change;
             goodPackageDropPercentage -= change;
 
             CapThePercentages();
+
+            // If badPackageDropPercentage hits the maximum, stop increasing difficulty
+            if (badPackageDropPercentage >= maximum_badPackagePercentage)
+            {
+                GameManager.Instance.difficulty = Mathf.Clamp(GameManager.Instance.difficulty, 1.0f, GameManager.Instance.difficulty);
+            }
         }
 
-        /// <summary>
-        /// Ensures percentages remain within specified bounds.
-        /// </summary>
         private void CapThePercentages()
         {
-            // Cap the good and bad percentages within their allowed ranges
             goodPackageDropPercentage = Mathf.Clamp(goodPackageDropPercentage, minimum_goodPackagePercentage, 100f - lifePackageDropPercentage);
             badPackageDropPercentage = Mathf.Clamp(badPackageDropPercentage, 0f, maximum_badPackagePercentage);
 
-            // Ensure total percentages (good + bad + life) do not exceed 100%
             float total = goodPackageDropPercentage + badPackageDropPercentage + lifePackageDropPercentage;
             if (total > 100f)
             {

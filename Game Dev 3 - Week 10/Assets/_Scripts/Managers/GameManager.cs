@@ -9,20 +9,20 @@ namespace GameDevWithMarco.Managers
         public int score;
         public float timeLeft = 60f;
         public int[] packageValues = new int[] { 12345, -5434 };
-        public int successRate; // Now explicitly treated as a percentage (0–100)
+        public int successRate; 
         public int lives = 5;
         public float playTime = 0;
-        public float difficulty = 1.0f;  // Difficulty level
+        public float difficulty = 1.0f; 
+        public float maxDifficulty = 5.0f;
 
         [SerializeField] GameEvent restartGame;
         [SerializeField] GameEvent gameOver;
-        [SerializeField] GameEvent gameWin;
 
-        private int winScoreThreshold = 2000000; // Example win score
-        private float winTimeThreshold = 60f;  // Example survival time in seconds
-        [SerializeField] bool isSurvival;
-        private bool isGameOver; // Tracks if the game is already over
+        private int winScoreThreshold = 2000000;
+        private bool isGameOver; 
         public bool isWin;
+
+        public bool isSurvival = false; // Track if Survival Mode is enabled
 
         protected override void Awake()
         {
@@ -37,18 +37,32 @@ namespace GameDevWithMarco.Managers
                 ValuesClamping();
                 TimeGoingDown();
 
-                if (SceneManager.GetActiveScene().name == "scn_Level1")
+                if (SceneManager.GetActiveScene().name == "scn_Level1" || SceneManager.GetActiveScene().name == "scn_level2")
                 {
                     StartCounting();
                     CheckWinCondition(); // Check win condition during gameplay
                 }
+
+                // In Survival mode, increase score every second
+                if (isSurvival)
+                {
+                    StartCounting();
+                    CheckWinCondition();
+                    SurvivalSetting();
+                }
             }
 
-            if (SceneManager.GetActiveScene().name == "scn_GameOver" && Input.anyKeyDown || 
-                SceneManager.GetActiveScene().name == "scn_GameWin" && Input.anyKeyDown)
+            if (SceneManager.GetActiveScene().name == "scn_GameOver" && Input.anyKeyDown)
             {
                 restartGame.Raise();
             }
+        }
+
+        private void SurvivalSetting()
+        {
+            winScoreThreshold = 10000000;
+            score += 1000; // Increment score every second in Survival mode
+            packageValues = new int[] { 0, 0 };
         }
 
         private void Initialisation()
@@ -57,13 +71,14 @@ namespace GameDevWithMarco.Managers
             score = 0;
             successRate = 50; // Start at a neutral 50%
             isGameOver = false; // Reset game over state
+            isSurvival = false; // Default to non-survival mode
+            isWin = false; // Reset win flag
         }
 
         private void TimeGoingDown()
         {
             if (SceneManager.GetActiveScene().name != "scn_MainMenu" &&
-                SceneManager.GetActiveScene().name != "scn_GameOver" && 
-                SceneManager.GetActiveScene().name != "scn_GameWin")
+                SceneManager.GetActiveScene().name != "scn_GameOver")
             {
                 timeLeft -= Time.deltaTime;
             }
@@ -71,10 +86,11 @@ namespace GameDevWithMarco.Managers
 
         private void ValuesClamping()
         {
-            score = Mathf.Clamp(score, 0, 100000000);
+            score = Mathf.Clamp(score, 0, 10000000);
             successRate = Mathf.Clamp(successRate, 0, 100);
             timeLeft = Mathf.Clamp(timeLeft, 0, 120);
             lives = Mathf.Clamp(lives, 0, 10);
+            difficulty = Mathf.Clamp(difficulty, 1.0f, maxDifficulty); // Clamp difficulty here
         }
 
         private void StartCounting()
@@ -86,7 +102,12 @@ namespace GameDevWithMarco.Managers
         {
             score += packageValues[0];
             successRate += 1; // Increase success rate on collecting a good package
-            difficulty += 0.1f; // Increase difficulty when a good package is collected
+
+            // Only increase difficulty if it is below the max limit
+            if (difficulty < maxDifficulty)
+            {
+                difficulty += 0.1f;
+            }
         }
 
         public void RedPackLogic()
@@ -99,8 +120,13 @@ namespace GameDevWithMarco.Managers
             {
                 score = 0;
             }
+
             successRate -= 3; // Decrease success rate on collecting a bad package
             lives--;
+
+            // Decrease difficulty when the player is damaged
+            difficulty -= 0.1f;
+
             if (lives <= 0)
             {
                 TriggerGameOver();
@@ -120,32 +146,22 @@ namespace GameDevWithMarco.Managers
             playTime = 0f;
             difficulty = 1.0f; // Reset difficulty on restart
             isGameOver = false; // Reset game over state
-            isWin = false;
+            isWin = false; // Reset win flag
+            isSurvival = false; // Reset survival mode
         }
 
         public void CheckWinCondition()
         {
-            if (isSurvival)
+            if (score >= winScoreThreshold && !isWin) // Ensure win is triggered only once
             {
-                if (playTime >= winTimeThreshold)
-                {
-                    TriggerWin();
-                }
-            }
-            else
-            {
-                if (score >= winScoreThreshold)
-                {
-                    TriggerWin();
-                }
+                TriggerWin();
             }
         }
 
         private void TriggerWin()
-        {   
-            isWin = true;
-            gameWin.Raise();
-
+        {
+            isWin = true; // Set the win flag to true so it doesn't trigger again
+            gameOver.Raise();
         }
 
         private void TriggerGameOver()

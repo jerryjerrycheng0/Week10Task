@@ -42,7 +42,7 @@ namespace GameDevWithMarco.Managers
         private void Update()
         {
 
-            if (SceneManager.GetActiveScene().name == "scn_Level1")
+            if (SceneManager.GetActiveScene().name == "scn_Level1" || SceneManager.GetActiveScene().name == "scn_Level2")
             {
                 GlitchWhenFailing();
 

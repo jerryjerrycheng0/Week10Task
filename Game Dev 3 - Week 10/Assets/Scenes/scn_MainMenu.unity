@@ -236,8 +236,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -248}
-  m_SizeDelta: {x: 1124.4, y: 138.1}
+  m_AnchoredPosition: {x: 0, y: -303.75}
+  m_SizeDelta: {x: 1445.29, y: 249.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!95 &411344579
 Animator:
@@ -293,7 +293,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: PRESS LEFT OR RIGHT ARROW TO PLAY
+  m_Text: 'PRESS LEFT ARROW TO PLAY
+
+    OR PRESS RIGHT ARROW FOR ENDLESS SURVIVAL'
 --- !u!222 &411344581
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -846,34 +848,6 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 818137788}
         m_TargetAssemblyTypeName: MyScenemanager, Assembly-CSharp
-        m_MethodName: GameOverReaction
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &818137793
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 818137787}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 85b156b310ef7874480e7bf7c59e3dc9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gameEvent: {fileID: 11400000, guid: be2de053f9da3b149937e17ddf48c4e6, type: 2}
-  response:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 818137788}
-        m_TargetAssemblyTypeName: GameDevWithMarco.Managers.MyScenemanager, Assembly-CSharp
         m_MethodName: GameOverReaction
         m_Mode: 1
         m_Arguments:
@@ -2211,10 +2185,6 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 818137790}
-    - targetCorrespondingSourceObject: {fileID: 6020198856816787015, guid: f799e6983a8838349ac68bafede4d8c5,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 818137793}
   m_SourcePrefab: {fileID: 100100000, guid: f799e6983a8838349ac68bafede4d8c5, type: 3}
 --- !u!4 &6168275215464110543
 Transform:

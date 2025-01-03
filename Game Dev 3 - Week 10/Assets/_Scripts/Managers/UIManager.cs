@@ -22,6 +22,7 @@ namespace GameDevWithMarco.Managers
         public string testString = "Test String";
         private Text gameOverScore;
         private Text gameOverScoreComment;
+        private GameManager gameManager;
 
         private Dictionary<int, string> scoreComments = new Dictionary<int, string>
         {
@@ -36,7 +37,7 @@ namespace GameDevWithMarco.Managers
             { 3000000, "SHOW THIS SCORE TO YOUR MOM" },
             { 4000000, "YOU ARE A PROFESSIONAL NOW" },
             { 5000000, "CHALLENGE SOMEONE TO BEAT YOUR SCORE" },
-            { 6000000, "YOU HAVE ASCENDED, SEND ME YOUR SCORE HUMAN - TWITTER @iS_m4v" }
+            { 6000000, "YOU HAVE ASCENDED, SEND ME YOUR SCORE HUMAN - TWITTER @iS_m4v" },
         };
 
         private void Awake()
@@ -61,10 +62,6 @@ namespace GameDevWithMarco.Managers
             if (SceneManager.GetActiveScene().name == "scn_GameOver")
             {
                 GameOverInitialisation();
-            }
-            if (SceneManager.GetActiveScene().name == "scb_GameWin")
-            {
-                GameWinInitialisation();
             }
         }
 
@@ -149,14 +146,15 @@ namespace GameDevWithMarco.Managers
             gameOverScore = GameObject.Find("txt_TotalScore").GetComponent<Text>();
             gameOverScore.text = "THE TOTAL SCORE IS " + GameManager.Instance.score + " AND YOU SURVIVED " + GameManager.Instance.playTime.ToString("f2") + " seconds!";
             gameOverScoreComment = GameObject.Find("txt_TotalScoreComment").GetComponent<Text>();
-            FinalComment();
-        }
-        private void GameWinInitialisation()
-        {
-            gameOverScore = GameObject.Find("txt_TotalScore").GetComponent<Text>();
-            gameOverScore.text = "THE TOTAL SCORE IS " + GameManager.Instance.score + " AND YOU SURVIVED " + GameManager.Instance.playTime.ToString("f2") + " seconds!";
-            gameOverScoreComment = GameObject.Find("txt_TotalScoreCommentWin").GetComponent<Text>();
-            gameOverScoreComment.text = "Amazingly done. Care to try out again?";
+            gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+            if (!gameManager.isWin)
+            {
+                FinalComment();
+            }
+            else
+            {
+                gameOverScoreComment.text = "Amazing Job. Care to survive another round?";
+            }
         }
 
         // Method to update the Difficulty UI Text
@@ -165,6 +163,10 @@ namespace GameDevWithMarco.Managers
             if (difficultyText != null)
             {
                 difficultyText.text = "Difficulty: " + GameManager.Instance.difficulty.ToString("F1"); // Display current difficulty
+                if (GameManager.Instance.isSurvival)
+                {
+                    difficultyText.text = " ";
+                }
             }
         }
     }
