@@ -29,7 +29,7 @@ namespace GameDevWithMarco.Player
             {
                 if (timeBtwSpawns <= 0)
                 {
-                    GameObject instance = (GameObject)Instantiate(echo, transform.position, Quaternion.identity);
+                    GameObject instance = Instantiate(echo, transform.position, Quaternion.identity);
                     Destroy(instance, instanceLife);
                     timeBtwSpawns = startTimeBtwSpawns;
                 }
@@ -45,7 +45,7 @@ namespace GameDevWithMarco.Player
             {
                 if (timeBtwSpawns <= 0)
                 {
-                    GameObject instance = (GameObject)Instantiate(echo, transform.position, Quaternion.identity);
+                    GameObject instance = Instantiate(echo, transform.position, Quaternion.identity);
                     Destroy(instance, instanceLife);
                     timeBtwSpawns = startTimeBtwSpawns;
                 }

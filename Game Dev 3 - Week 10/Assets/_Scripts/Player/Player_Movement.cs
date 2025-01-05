@@ -17,7 +17,6 @@ namespace GameDevWithMarco.Player
         public int direction;
         public Transform[] lerpPositionArray;
         private float lerpTime = 0.2f;
-        private Vector3 newPosition;
         private int arrayNumber = 2;
         private bool isWaiting;
         private Animator anim;
@@ -41,7 +40,6 @@ namespace GameDevWithMarco.Player
         private void SetupVariables()
         {
             transform.position = lerpPositionArray[2].transform.position;
-            newPosition = transform.position;
             rb = GetComponent<Rigidbody2D>();
             rb.gravityScale = 0;
             anim = GetComponent<Animator>();
@@ -55,20 +53,7 @@ namespace GameDevWithMarco.Player
                 anim.SetBool("isDashing", false);
                 if (!isWaiting)
                 {
-                    if (Input.GetKeyDown(KeyCode.RightArrow))
-                    {
-                        StartCoroutine(MoveToNextPositionToTheRight());
-                        direction = 2;
-                        anim.SetBool("isDashing", true);
-                        AudioManager.Instance.Dash();
-                    }
-                    else if (Input.GetKeyDown(KeyCode.LeftArrow))
-                    {
-                        StartCoroutine(MoveToNextPositionToTheLeft());
-                        direction = 1;
-                        anim.SetBool("isDashing", true);
-                        AudioManager.Instance.Dash();
-                    }
+                    MovingKeys();
                 }
 
             }
@@ -87,6 +72,23 @@ namespace GameDevWithMarco.Player
             }
         }
 
+        private void MovingKeys()
+        {
+            if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                StartCoroutine(MoveToNextPositionToTheRight());
+                direction = 2;
+                anim.SetBool("isDashing", true);
+                AudioManager.Instance.Dash();
+            }
+            else if (Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                StartCoroutine(MoveToNextPositionToTheLeft());
+                direction = 1;
+                anim.SetBool("isDashing", true);
+                AudioManager.Instance.Dash();
+            }
+        }
 
 
         private IEnumerator MoveToNextPositionToTheLeft()

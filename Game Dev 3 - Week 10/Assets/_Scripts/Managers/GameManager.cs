@@ -71,7 +71,6 @@ namespace GameDevWithMarco.Managers
             score = 0;
             successRate = 50; // Start at a neutral 50%
             isGameOver = false; // Reset game over state
-            isSurvival = false; // Default to non-survival mode
             isWin = false; // Reset win flag
         }
 
@@ -112,14 +111,8 @@ namespace GameDevWithMarco.Managers
 
         public void RedPackLogic()
         {
-            if (score >= 543)
-            {
-                score += packageValues[1];
-            }
-            else
-            {
-                score = 0;
-            }
+            if (score >= 543) score += packageValues[1];
+            else score = 0;
 
             successRate -= 3; // Decrease success rate on collecting a bad package
             lives--;
@@ -127,10 +120,7 @@ namespace GameDevWithMarco.Managers
             // Decrease difficulty when the player is damaged
             difficulty -= 0.1f;
 
-            if (lives <= 0)
-            {
-                TriggerGameOver();
-            }
+            if (lives <= 0) TriggerGameOver();
         }
 
         public void LifePackLogic()
@@ -147,15 +137,11 @@ namespace GameDevWithMarco.Managers
             difficulty = 1.0f; // Reset difficulty on restart
             isGameOver = false; // Reset game over state
             isWin = false; // Reset win flag
-            isSurvival = false; // Reset survival mode
         }
 
         public void CheckWinCondition()
         {
-            if (score >= winScoreThreshold && !isWin) // Ensure win is triggered only once
-            {
-                TriggerWin();
-            }
+            if (score >= winScoreThreshold && !isWin) TriggerWin(); // Ensure win is triggered only once
         }
 
         private void TriggerWin()

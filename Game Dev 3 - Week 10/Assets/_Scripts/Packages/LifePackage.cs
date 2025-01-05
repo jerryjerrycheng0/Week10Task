@@ -1,5 +1,4 @@
 using GameDevWithMarco.Interfaces;
-using GameDevWithMarco.Managers;
 using GameDevWithMarco.ObserverPattern;
 using UnityEngine;
 

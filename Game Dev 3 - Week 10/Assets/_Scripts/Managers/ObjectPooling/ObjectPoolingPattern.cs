@@ -1,4 +1,3 @@
-
 using UnityEngine;
 using GameDevWithMarco.Managers;
 using System.Collections.Generic;
@@ -60,6 +59,27 @@ namespace GameDevWithMarco.DesignPattern
         {
             List<GameObject> poolToUse = new List<GameObject>();
 
+            poolToUse = SwitchPool(typeOfPoolToUse, poolToUse);
+
+            int itemInPoolCount = poolToUse.Count;
+            //Goes through the pool
+            for (int i = 0; itemInPoolCount > 0; i++)
+            {
+                //Looks for the first item that is not active
+                if (!poolToUse[i].activeSelf)
+                {
+                    poolToUse[i].SetActive(true);
+                    return poolToUse[i];
+                }
+            }
+            //Gives us a warning that the pool might be too small
+            Debug.LogWarning("No Availeble Items Found, Pool Too Small!");
+            //If there are none returns null
+            return null;
+        }
+
+        private List<GameObject> SwitchPool(TypeOfPool typeOfPoolToUse, List<GameObject> poolToUse)
+        {
             switch (typeOfPoolToUse)
             {
                 case TypeOfPool.Good:
@@ -71,24 +91,10 @@ namespace GameDevWithMarco.DesignPattern
                 case TypeOfPool.Life:
                     poolToUse = lifePool;
                     break;
-                
+
             }
 
-            int itemInPoolCount = poolToUse.Count;
-            //Goes through the pool
-            for (int i = 0; itemInPoolCount > 0; i++)
-            {
-                //Looks for the first item that is not active
-                if (!poolToUse[i].activeSelf)
-                {
-                    poolToUse[i].SetActive(true);
-                    return poolToUse[i];  
-                }
-            }
-            //Gives us a warning that the pool might be too small
-            Debug.LogWarning("No Availeble Items Found, Pool Too Small!");
-            //If there are none returns null
-            return null;
+            return poolToUse;
         }
     }
 }
